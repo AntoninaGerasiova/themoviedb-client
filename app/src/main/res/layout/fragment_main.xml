@@ -9,9 +9,14 @@
     tools:context="com.example.android.finalproject.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <ImageView
+        android:id="@+id/test_view"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+
+        android:background="#fa2255"
+        android:src="@android:drawable/ic_delete"
+         />
 
 </RelativeLayout>
