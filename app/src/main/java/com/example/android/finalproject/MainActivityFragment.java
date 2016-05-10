@@ -12,6 +12,10 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,8 +114,47 @@ public class MainActivityFragment extends Fragment {
             }
 
 
+            try {
+                return getPostersUrlsFromJson(resultJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
 
-            return new String[0];
+             // This will only happen if there was an error getting or parsing the forecast.
+            return null;
+            //return new String[0];
         }
+
+        /**
+         * Take the String representing the information about movies in JSON Format and
+         * pull out the data we need to construct the urls to the movie posters
+         *
+         */
+        private String[] getPostersUrlsFromJson (String resultJsonStr)
+                throws JSONException
+        {
+
+             // These are the names of the JSON objects that need to be extracted.
+            final String RESULTS = "results";
+            final String POSTER_PATH = "poster_path";
+
+
+            JSONObject resultJson = new JSONObject(resultJsonStr);
+            JSONArray movieArray = resultJson.getJSONArray(RESULTS);
+
+            String[] resultStrs = new String[movieArray.length()];
+            for(int i = 0; i < movieArray.length(); i++) {
+                resultStrs[i] = movieArray.getJSONObject(i).getString(POSTER_PATH);
+                resultStrs[i] = makeFullPath(resultStrs[i]);
+                Log.v(LOG_TAG, resultStrs[i]);
+            }
+            return resultStrs;
+        }
+
+        private String makeFullPath(String partPath) {
+           return  "http://image.tmdb.org/t/p/" + "w154" + partPath;
+        }
+
     }
 }
