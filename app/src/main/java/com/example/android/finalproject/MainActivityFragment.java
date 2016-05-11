@@ -2,12 +2,14 @@ package com.example.android.finalproject;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -22,12 +24,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-
+    ImageAdapter mAdapter;
     public MainActivityFragment() {
     }
 
@@ -38,6 +41,9 @@ public class MainActivityFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
         //ImageView testView = (ImageView) rootView.findViewById(R.id.test_view);
         //Picasso.with(getActivity().getApplicationContext()).load("http://image.tmdb.org/t/p/w92/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(testView);
+        GridView posterGridView = (GridView) rootView.findViewById(R.id.posters_gridview);
+        mAdapter = new ImageAdapter(getActivity().getApplicationContext(), new ArrayList<String>());
+        posterGridView.setAdapter(mAdapter);
         new FetchMoviesTask().execute();
         return rootView;
     }
@@ -152,9 +158,33 @@ public class MainActivityFragment extends Fragment {
             return resultStrs;
         }
 
+        /**
+         * Make full path from partPath. May be complicated later
+         * @param partPath - part path to poster
+         * @return full path to poster
+         */
         private String makeFullPath(String partPath) {
            return  "http://image.tmdb.org/t/p/" + "w154" + partPath;
         }
 
+        /**
+         * add posters to the adapter
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                mAdapter.clear();
+                //for the newest version add posters in one banch
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    mAdapter.addAll(result);
+                }
+                else {
+                    for (String poster : result) {
+                        mAdapter.add(poster);
+                    }
+                }
+            }
+        }
     }
 }

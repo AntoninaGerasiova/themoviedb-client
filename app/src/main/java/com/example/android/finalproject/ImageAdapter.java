@@ -9,15 +9,17 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 /**
- * Created by tony on 11.05.16.
+ *Image Adapter to show posters.
  */
-public class ImageAdapter extends ArrayAdapter {
+public class ImageAdapter extends ArrayAdapter <String>{
     private Context context;
     private LayoutInflater inflater;
-    private String[] imageUrls;
+    private ArrayList<String> imageUrls;
 
-    public ImageAdapter(Context context, String[] imageUrls) {
+    public ImageAdapter(Context context, ArrayList<String> imageUrls) {
         super(context, R.layout.grid_item, imageUrls);
 
         this.context = context;
@@ -34,7 +36,7 @@ public class ImageAdapter extends ArrayAdapter {
 
         Picasso
             .with(context)
-            .load(imageUrls[position])
+            .load(imageUrls.get(position))
             .fit()
             .into((ImageView) convertView);
 
