@@ -9,14 +9,10 @@
     tools:context="com.example.android.finalproject.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
-    <ImageView
-        android:id="@+id/test_view"
-
-        android:layout_width="wrap_content"
+    <GridView
+        android:id="@+id/posters_gridview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:background="#fa2255"
-        android:src="@android:drawable/ic_delete"
-         />
+        android:numColumns="2"/>
 
 </RelativeLayout>
