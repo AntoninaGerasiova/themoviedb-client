@@ -49,4 +49,14 @@ public class MovieInfo {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Title: %s\nPoster Address: %s\nOverview: %s\nAverage Vote: %s\nRelease Date: %s\n",
+                title,
+                posterAddress,
+                overview,
+                voteAverage,
+                releaseDate);
+    }
 }

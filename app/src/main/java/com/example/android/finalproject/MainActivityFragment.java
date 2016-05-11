@@ -42,17 +42,17 @@ public class MainActivityFragment extends Fragment {
         //ImageView testView = (ImageView) rootView.findViewById(R.id.test_view);
         //Picasso.with(getActivity().getApplicationContext()).load("http://image.tmdb.org/t/p/w92/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(testView);
         GridView posterGridView = (GridView) rootView.findViewById(R.id.posters_gridview);
-        mAdapter = new ImageAdapter(getActivity().getApplicationContext(), new ArrayList<String>());
+        mAdapter = new ImageAdapter(getActivity().getApplicationContext(), new ArrayList<MovieInfo>());
         posterGridView.setAdapter(mAdapter);
         new FetchMoviesTask().execute();
         return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(Void... params) {
+        protected MovieInfo[] doInBackground(Void... params) {
              // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -121,7 +121,7 @@ public class MainActivityFragment extends Fragment {
 
 
             try {
-                return getPostersUrlsFromJson(resultJsonStr);
+                return getMovieInfoFromJson(resultJsonStr);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -137,25 +137,36 @@ public class MainActivityFragment extends Fragment {
          * pull out the data we need to construct the urls to the movie posters
          *
          */
-        private String[] getPostersUrlsFromJson (String resultJsonStr)
+        private MovieInfo[] getMovieInfoFromJson (String resultJsonStr)
                 throws JSONException
         {
 
              // These are the names of the JSON objects that need to be extracted.
             final String RESULTS = "results";
             final String POSTER_PATH = "poster_path";
-
+            final String TITLE = "title";
+            final String OVERVIEW = "overview";
+            final String VOTE_AVERAGE = "vote_average";
+            final String RELEASE_DATE = "release_date";
 
             JSONObject resultJson = new JSONObject(resultJsonStr);
             JSONArray movieArray = resultJson.getJSONArray(RESULTS);
 
-            String[] resultStrs = new String[movieArray.length()];
+            MovieInfo[] resultInfo = new MovieInfo[movieArray.length()];
+
+            //populate movieArray with MovieInfo objects. Get info from JSON string
             for(int i = 0; i < movieArray.length(); i++) {
-                resultStrs[i] = movieArray.getJSONObject(i).getString(POSTER_PATH);
-                resultStrs[i] = makeFullPath(resultStrs[i]);
-                Log.v(LOG_TAG, resultStrs[i]);
+                JSONObject nextMovieJSON = movieArray.getJSONObject(i);
+                resultInfo[i] = new MovieInfo();
+                resultInfo[i].setPosterAddress(makeFullPath(nextMovieJSON.getString(POSTER_PATH)));
+                resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
+                resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
+                resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
+                resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
+
+                //Log.v(LOG_TAG, resultInfo[i].toString());
             }
-            return resultStrs;
+            return resultInfo;
         }
 
         /**
@@ -172,17 +183,12 @@ public class MainActivityFragment extends Fragment {
          * @param result
          */
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(MovieInfo[] result) {
+            //if it is som result populate adapter with MovieInfo objects
             if (result != null) {
                 mAdapter.clear();
-                //for the newest version add posters in one banch
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    mAdapter.addAll(result);
-                }
-                else {
-                    for (String poster : result) {
-                        mAdapter.add(poster);
-                    }
+                for (MovieInfo movie : result) {
+                        mAdapter.add(movie);
                 }
             }
         }

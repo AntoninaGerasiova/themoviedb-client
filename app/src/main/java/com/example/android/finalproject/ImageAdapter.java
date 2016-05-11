@@ -12,18 +12,18 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- *Image Adapter to show posters.
+ *ImageAdapter actually have all information about movies
  */
-public class ImageAdapter extends ArrayAdapter <String>{
+public class ImageAdapter extends ArrayAdapter <MovieInfo>{
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<String> imageUrls;
+    private ArrayList<MovieInfo> movies;
 
-    public ImageAdapter(Context context, ArrayList<String> imageUrls) {
-        super(context, R.layout.grid_item, imageUrls);
+    public ImageAdapter(Context context, ArrayList<MovieInfo> movies) {
+        super(context, R.layout.grid_item, movies);
 
         this.context = context;
-        this.imageUrls = imageUrls;
+        this.movies = movies;
 
         inflater = LayoutInflater.from(context);
     }
@@ -36,7 +36,7 @@ public class ImageAdapter extends ArrayAdapter <String>{
 
         Picasso
             .with(context)
-            .load(imageUrls.get(position))
+            .load(movies.get(position).getPosterAddress())
             .fit()
             .into((ImageView) convertView);
 
