@@ -1,5 +1,6 @@
 package com.example.android.finalproject;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -30,7 +32,15 @@ import java.util.ArrayList;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    ImageAdapter mAdapter;
+    //public constants for Intent's extras
+    public static final String TITLE = "title";
+    public static final String POSTER_PATH = "posterPath";
+    public static final String OVERVIEW = "overview";
+    public static final String VOTE_AVERAGE = "vote_average";
+    public static final String RELEASE_DATE = "release_date";
+
+    private ImageAdapter mAdapter;
+
     public MainActivityFragment() {
     }
 
@@ -45,6 +55,22 @@ public class MainActivityFragment extends Fragment {
         mAdapter = new ImageAdapter(getActivity().getApplicationContext(), new ArrayList<MovieInfo>());
         posterGridView.setAdapter(mAdapter);
         new FetchMoviesTask().execute();
+
+        //call DetailActivity when click on poster
+        posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MovieInfo movieInfo = mAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(TITLE, movieInfo.getTitle());
+                intent.putExtra(POSTER_PATH, movieInfo.getPosterAddress());
+                intent.putExtra(OVERVIEW, movieInfo.getOverview());
+                intent.putExtra(VOTE_AVERAGE, movieInfo.getVoteAverage());
+                intent.putExtra(RELEASE_DATE, movieInfo.getReleaseDate());
+                startActivity(intent);
+
+            }
+        });
         return rootView;
     }
 
