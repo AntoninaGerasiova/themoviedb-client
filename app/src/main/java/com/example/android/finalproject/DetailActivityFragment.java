@@ -23,7 +23,10 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+         //Get information from launching intent and fill the views of the fragment_detail.xml
         Intent intent = getActivity().getIntent();
         if(intent != null) {
             if (intent.hasExtra(MainActivityFragment.TITLE)) {
@@ -43,16 +46,18 @@ public class DetailActivityFragment extends Fragment {
             }
 
             if (intent.hasExtra(MainActivityFragment.VOTE_AVERAGE)) {
+                String voteAverage = getString(R.string.rating)
+                        + intent.getStringExtra(MainActivityFragment.VOTE_AVERAGE);
                  ((TextView) rootView.findViewById(R.id.vote_average)).
-                         setText(intent.getStringExtra(MainActivityFragment.VOTE_AVERAGE));
+                         setText(voteAverage);
             }
 
             if (intent.hasExtra(MainActivityFragment.RELEASE_DATE)) {
-                 ((TextView) rootView.findViewById(R.id.release_date)).
-                         setText(intent.getStringExtra(MainActivityFragment.RELEASE_DATE));
+                String releaseDate = getString(R.string.release_date)
+                        +intent.getStringExtra(MainActivityFragment.RELEASE_DATE);
+                        ((TextView) rootView.findViewById(R.id.release_date)).
+                         setText(releaseDate);
             }
-
-
         }
 
         return rootView;
