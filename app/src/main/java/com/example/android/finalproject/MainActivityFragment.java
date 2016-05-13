@@ -99,10 +99,25 @@ public class MainActivityFragment extends Fragment {
             String resultJsonStr = null;
 
             try {
-                 // Construct the URL for  themoviedb.org query
 
-                final String BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
                 final String APIKEY_PARAM = "api_key";
+                String BASE_URL;
+                 // Construct the URL for  themoviedb.org query
+                //get sort preference
+                SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String sortType = sharedPrefs.getString(
+                    getString(R.string.pref_order_key),
+                    getString(R.string.pref_order_vote));
+
+                if (sortType.equals(getString(R.string.pref_order_vote))) {
+                     BASE_URL = "http://api.themoviedb.org/3/movie/top_rated?";
+                }
+                else if (sortType.equals(getString(R.string.pref_order_popularity))) {
+                     BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+                }
+                else return null;
+
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                         .appendQueryParameter(APIKEY_PARAM,  BuildConfig.THEMOVIEDB_API_KEY)
@@ -205,19 +220,7 @@ public class MainActivityFragment extends Fragment {
                 //Log.v(LOG_TAG, resultInfo[i].toString());
             }
 
-            //sort array
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String sortType = sharedPrefs.getString(
-                    getString(R.string.pref_order_key),
-                    getString(R.string.pref_order_vote));
 
-            if (sortType.equals(getString(R.string.pref_order_vote))) {
-                Arrays.sort(resultInfo,new MovieInfo.CompareByVote());
-            }
-            else if (sortType.equals(getString(R.string.pref_order_popularity))) {
-                Arrays.sort(resultInfo,new MovieInfo.CompareByPopularity());
-            }
             return resultInfo;
         }
 
