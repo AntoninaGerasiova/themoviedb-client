@@ -1,9 +1,11 @@
 package com.example.android.finalproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,7 +58,7 @@ public class MainActivityFragment extends Fragment {
         GridView posterGridView = (GridView) rootView.findViewById(R.id.posters_gridview);
         mAdapter = new ImageAdapter(getActivity().getApplicationContext(), new ArrayList<MovieInfo>());
         posterGridView.setAdapter(mAdapter);
-        new FetchMoviesTask().execute();
+
 
         //call DetailActivity when click on poster
         posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,6 +76,13 @@ public class MainActivityFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //get info about movies from internet every time when activity started
+        new FetchMoviesTask().execute();
     }
 
     public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
@@ -196,9 +205,19 @@ public class MainActivityFragment extends Fragment {
                 //Log.v(LOG_TAG, resultInfo[i].toString());
             }
 
-            //sorting array by vote (for the time being)
-            Arrays.sort(resultInfo,new MovieInfo.CompareByVote());
-            //Arrays.sort(resultInfo,new MovieInfo.CompareByPopularity());
+            //sort array
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortType = sharedPrefs.getString(
+                    getString(R.string.pref_order_key),
+                    getString(R.string.pref_order_vote));
+
+            if (sortType.equals(getString(R.string.pref_order_vote))) {
+                Arrays.sort(resultInfo,new MovieInfo.CompareByVote());
+            }
+            else if (sortType.equals(getString(R.string.pref_order_popularity))) {
+                Arrays.sort(resultInfo,new MovieInfo.CompareByPopularity());
+            }
             return resultInfo;
         }
 
