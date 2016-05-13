@@ -1,5 +1,7 @@
 package com.example.android.finalproject;
 
+import java.util.Comparator;
+
 /**
  * Keeps information about class
  */
@@ -9,6 +11,7 @@ public class MovieInfo {
     private String overview;
     private String voteAverage;
     private String releaseDate;
+    private String popularity;
 
     public String getPosterAddress() {
         return posterAddress;
@@ -28,6 +31,10 @@ public class MovieInfo {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    public String getPopularity() {
+        return popularity;
     }
 
     public void setPosterAddress(String posterAddress) {
@@ -50,6 +57,10 @@ public class MovieInfo {
         this.releaseDate = releaseDate;
     }
 
+    public void setPopularity(String popularity) {
+        this.popularity = popularity;
+    }
+
     @Override
     public String toString() {
         return String.format("Title: %s\nPoster Address: %s\nOverview: %s\nAverage Vote: %s\nRelease Date: %s\n",
@@ -58,5 +69,26 @@ public class MovieInfo {
                 overview,
                 voteAverage,
                 releaseDate);
+    }
+
+    // comporators to sort films in descending order
+    static class CompareByVote implements Comparator <MovieInfo>  {
+
+        @Override
+        public int compare(MovieInfo first, MovieInfo second) {
+            Double vote1 = Double.parseDouble(first.getVoteAverage());
+            Double vote2 = Double.parseDouble(second.getVoteAverage());
+            return -1 * Double.compare(vote1, vote2);
+        }
+    }
+
+    static class CompareByPopularity implements Comparator <MovieInfo>  {
+
+        @Override
+        public int compare(MovieInfo first, MovieInfo second) {
+            Double popularity1 = Double.parseDouble(first.getPopularity());
+            Double popularity2 = Double.parseDouble(second.getPopularity());
+            return -1 * Double.compare(popularity1, popularity2);
+        }
     }
 }

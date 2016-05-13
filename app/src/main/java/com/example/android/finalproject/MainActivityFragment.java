@@ -27,6 +27,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -174,6 +176,7 @@ public class MainActivityFragment extends Fragment {
             final String OVERVIEW = "overview";
             final String VOTE_AVERAGE = "vote_average";
             final String RELEASE_DATE = "release_date";
+            final String POPULARITY = "popularity";
 
             JSONObject resultJson = new JSONObject(resultJsonStr);
             JSONArray movieArray = resultJson.getJSONArray(RESULTS);
@@ -189,9 +192,13 @@ public class MainActivityFragment extends Fragment {
                 resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
                 resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
                 resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
-
+                resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
                 //Log.v(LOG_TAG, resultInfo[i].toString());
             }
+
+            //sorting array by vote (for the time being)
+            Arrays.sort(resultInfo,new MovieInfo.CompareByVote());
+            //Arrays.sort(resultInfo,new MovieInfo.CompareByPopularity());
             return resultInfo;
         }
 
