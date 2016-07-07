@@ -71,24 +71,4 @@ public class MovieInfo {
                 releaseDate);
     }
 
-    // comporators to sort films in descending order
-    static class CompareByVote implements Comparator <MovieInfo>  {
-
-        @Override
-        public int compare(MovieInfo first, MovieInfo second) {
-            Double vote1 = Double.parseDouble(first.getVoteAverage());
-            Double vote2 = Double.parseDouble(second.getVoteAverage());
-            return -1 * Double.compare(vote1, vote2);
-        }
-    }
-
-    static class CompareByPopularity implements Comparator <MovieInfo>  {
-
-        @Override
-        public int compare(MovieInfo first, MovieInfo second) {
-            Double popularity1 = Double.parseDouble(first.getPopularity());
-            Double popularity2 = Double.parseDouble(second.getPopularity());
-            return -1 * Double.compare(popularity1, popularity2);
-        }
-    }
 }
