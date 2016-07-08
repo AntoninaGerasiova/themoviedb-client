@@ -31,6 +31,64 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
 
     @Override
     protected MovieInfo[] doInBackground(Void... params) {
+
+
+        // Will contain the raw JSON response as a string.
+        String resultJsonStr = getJsonString();
+        if (resultJsonStr != null) {
+            try {
+                return getMovieInfoFromJson(resultJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+        }
+
+        // This will only happen if there was an error getting or parsing the forecast.
+        return null;
+    }
+
+    /**
+     * Take the String representing the information about movies in JSON Format and
+     * pull out the data we need to construct the urls to the movie posters
+     *
+     */
+    private MovieInfo[] getMovieInfoFromJson (String resultJsonStr)
+            throws JSONException
+    {
+
+        // These are the names of the JSON objects that need to be extracted.
+        final String RESULTS = "results";
+        final String POSTER_PATH = "poster_path";
+        final String TITLE = "title";
+        final String OVERVIEW = "overview";
+        final String VOTE_AVERAGE = "vote_average";
+        final String RELEASE_DATE = "release_date";
+        final String POPULARITY = "popularity";
+
+        JSONObject resultJson = new JSONObject(resultJsonStr);
+        JSONArray movieArray = resultJson.getJSONArray(RESULTS);
+
+        MovieInfo[] resultInfo = new MovieInfo[movieArray.length()];
+
+        //populate movieArray with MovieInfo objects. Get info from JSON string
+        for(int i = 0; i < movieArray.length(); i++) {
+            JSONObject nextMovieJSON = movieArray.getJSONObject(i);
+            resultInfo[i] = new MovieInfo();
+            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
+            resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
+            resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
+            resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
+            resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
+            resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
+            Log.v(LOG_TAG, resultInfo[i].toString());
+        }
+
+
+        return resultInfo;
+    }
+
+    private String getJsonString () {
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -77,8 +135,8 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
                 return null;
             }
 
-            resultJsonStr = buffer.toString();
             Log.v(LOG_TAG, "Result JSON String: " + resultJsonStr);
+            return buffer.toString();
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -97,58 +155,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
                 }
             }
         }
-
-
-        try {
-            return getMovieInfoFromJson(resultJsonStr);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
-
-        // This will only happen if there was an error getting or parsing the forecast.
-        return null;
-
-    }
-
-    /**
-     * Take the String representing the information about movies in JSON Format and
-     * pull out the data we need to construct the urls to the movie posters
-     *
-     */
-    private MovieInfo[] getMovieInfoFromJson (String resultJsonStr)
-            throws JSONException
-    {
-
-        // These are the names of the JSON objects that need to be extracted.
-        final String RESULTS = "results";
-        final String POSTER_PATH = "poster_path";
-        final String TITLE = "title";
-        final String OVERVIEW = "overview";
-        final String VOTE_AVERAGE = "vote_average";
-        final String RELEASE_DATE = "release_date";
-        final String POPULARITY = "popularity";
-
-        JSONObject resultJson = new JSONObject(resultJsonStr);
-        JSONArray movieArray = resultJson.getJSONArray(RESULTS);
-
-        MovieInfo[] resultInfo = new MovieInfo[movieArray.length()];
-
-        //populate movieArray with MovieInfo objects. Get info from JSON string
-        for(int i = 0; i < movieArray.length(); i++) {
-            JSONObject nextMovieJSON = movieArray.getJSONObject(i);
-            resultInfo[i] = new MovieInfo();
-            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
-            resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
-            resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
-            resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
-            resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
-            resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
-            Log.v(LOG_TAG, resultInfo[i].toString());
-        }
-
-
-        return resultInfo;
     }
 
     /**
