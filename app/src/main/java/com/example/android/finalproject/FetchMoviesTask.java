@@ -48,46 +48,12 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         return null;
     }
 
+
+
     /**
-     * Take the String representing the information about movies in JSON Format and
-     * pull out the data we need to construct the urls to the movie posters
-     *
+     * get raw JSON-string from themoviedb.org
+     * @return  raw JSON-string
      */
-    private MovieInfo[] getMovieInfoFromJson (String resultJsonStr)
-            throws JSONException
-    {
-
-        // These are the names of the JSON objects that need to be extracted.
-        final String RESULTS = "results";
-        final String POSTER_PATH = "poster_path";
-        final String TITLE = "title";
-        final String OVERVIEW = "overview";
-        final String VOTE_AVERAGE = "vote_average";
-        final String RELEASE_DATE = "release_date";
-        final String POPULARITY = "popularity";
-
-        JSONObject resultJson = new JSONObject(resultJsonStr);
-        JSONArray movieArray = resultJson.getJSONArray(RESULTS);
-
-        MovieInfo[] resultInfo = new MovieInfo[movieArray.length()];
-
-        //populate movieArray with MovieInfo objects. Get info from JSON string
-        for(int i = 0; i < movieArray.length(); i++) {
-            JSONObject nextMovieJSON = movieArray.getJSONObject(i);
-            resultInfo[i] = new MovieInfo();
-            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
-            resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
-            resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
-            resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
-            resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
-            resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
-            Log.v(LOG_TAG, resultInfo[i].toString());
-        }
-
-
-        return resultInfo;
-    }
-
     private String getJsonString () {
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
@@ -155,6 +121,48 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
                 }
             }
         }
+    }
+
+    /**
+     * Take the String representing the information about movies in JSON Format and
+     * pull out the data we need to construct the urls to the movie posters
+     *
+     */
+    private MovieInfo[] getMovieInfoFromJson (String resultJsonStr)
+            throws JSONException
+    {
+
+        // These are the names of the JSON objects that need to be extracted.
+        final String RESULTS = "results";
+        final String POSTER_PATH = "poster_path";
+        final String BACKDROP_PATH = "backdrop_path";
+        final String TITLE = "title";
+        final String OVERVIEW = "overview";
+        final String VOTE_AVERAGE = "vote_average";
+        final String RELEASE_DATE = "release_date";
+        final String POPULARITY = "popularity";
+
+        JSONObject resultJson = new JSONObject(resultJsonStr);
+        JSONArray movieArray = resultJson.getJSONArray(RESULTS);
+
+        MovieInfo[] resultInfo = new MovieInfo[movieArray.length()];
+
+        //populate movieArray with MovieInfo objects. Get info from JSON string
+        for(int i = 0; i < movieArray.length(); i++) {
+            JSONObject nextMovieJSON = movieArray.getJSONObject(i);
+            resultInfo[i] = new MovieInfo();
+            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
+            resultInfo[i].setBackdropAddress(nextMovieJSON.getString(BACKDROP_PATH));
+            resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
+            resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
+            resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
+            resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
+            resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
+            Log.v(LOG_TAG, resultInfo[i].toString());
+        }
+
+
+        return resultInfo;
     }
 
     /**
