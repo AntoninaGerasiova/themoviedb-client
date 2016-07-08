@@ -7,6 +7,7 @@ import java.util.Comparator;
  */
 public class MovieInfo {
     private String posterAddress;
+    private String backdropAddress;
     private String title;
     private String overview;
     private String voteAverage;
@@ -37,6 +38,10 @@ public class MovieInfo {
         return popularity;
     }
 
+    public String getBackdropAddress() {
+        return backdropAddress;
+    }
+
     public void setPosterAddress(String posterAddress) {
         this.posterAddress = posterAddress;
     }
@@ -61,11 +66,16 @@ public class MovieInfo {
         this.popularity = popularity;
     }
 
+    public void setBackdropAddress(String backdropAddress) {
+        this.backdropAddress = backdropAddress;
+    }
+
     @Override
     public String toString() {
-        return String.format("Title: %s\nPoster Address: %s\nOverview: %s\nAverage Vote: %s\nRelease Date: %s\n",
+        return String.format("Title: %s\nPoster Address: %s\nBackdrop Address: %s\nOverview: %s\nAverage Vote: %s\nRelease Date: %s\n",
                 title,
                 posterAddress,
+                backdropAddress,
                 overview,
                 voteAverage,
                 releaseDate);

@@ -158,7 +158,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
             resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
             resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
             resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
-            //Log.v(LOG_TAG, resultInfo[i].toString());
+            Log.v(LOG_TAG, resultInfo[i].toString());
         }
 
 
