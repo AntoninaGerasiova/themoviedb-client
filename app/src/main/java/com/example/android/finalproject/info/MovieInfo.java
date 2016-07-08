@@ -1,4 +1,4 @@
-package com.example.android.finalproject;
+package com.example.android.finalproject.info;
 
 import java.util.Comparator;
 
