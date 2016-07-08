@@ -42,23 +42,9 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         try {
 
             final String APIKEY_PARAM = "api_key";
-            String BASE_URL;
-            // Construct the URL for  themoviedb.org query
-            //get sort preference
-            SharedPreferences sharedPrefs =
-                    PreferenceManager.getDefaultSharedPreferences(mContext);
-            String sortType = sharedPrefs.getString(
-                    mContext.getString(R.string.pref_order_key),
-                    mContext.getString(R.string.pref_order_vote));
-
-            if (sortType.equals(mContext.getString(R.string.pref_order_vote))) {
-                BASE_URL = "http://api.themoviedb.org/3/movie/top_rated?";
-            }
-            else if (sortType.equals(mContext.getString(R.string.pref_order_popularity))) {
-                BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
-            }
-            else return null;
-
+            String BASE_URL = Utility.getBaseURL(mContext);
+            if (BASE_URL == null)
+                return null;
 
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                     .appendQueryParameter(APIKEY_PARAM,  BuildConfig.THEMOVIEDB_API_KEY)
