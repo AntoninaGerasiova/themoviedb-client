@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
+    public static final int POSTER_WIDTH = 154;
 
     public DetailActivityFragment() {
     }
@@ -34,7 +35,7 @@ public class DetailActivityFragment extends Fragment {
                  ((TextView) rootView.findViewById(R.id.title)).setText(title);
             }
             if (intent.hasExtra(MainActivityFragment.POSTER_PATH)) {
-                String posterAddress = intent.getStringExtra(MainActivityFragment.POSTER_PATH);
+                String posterAddress = Utility.makeFullPath(POSTER_WIDTH, intent.getStringExtra(MainActivityFragment.POSTER_PATH));
                 ImageView posterView = (ImageView)rootView.findViewById(R.id.poster);
                 Picasso.with(getActivity().getApplicationContext()).load(posterAddress)
                         .into(posterView);

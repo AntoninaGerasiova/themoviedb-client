@@ -5,7 +5,14 @@ package com.example.android.finalproject;
  */
 public class Utility {
 
-//    public static String makeFullPath(String partPath, String wide) {
-//
-//    }
+    /**
+     * Make full path from partPath. May be complicated later
+     * @param partPath - part path to poster
+     * @param width - width of the poster
+     * @return full path to poster
+     */
+    public static String makeFullPath(int width,String partPath)
+    {
+        return String.format("http://image.tmdb.org/t/p/w%d%s", width, partPath);
+    }
 }

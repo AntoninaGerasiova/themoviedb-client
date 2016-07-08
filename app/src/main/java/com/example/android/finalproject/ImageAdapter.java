@@ -16,6 +16,8 @@ import java.util.ArrayList;
  *ImageAdapter actually have all information about movies
  */
 public class ImageAdapter extends ArrayAdapter <MovieInfo>{
+
+    public static final int POSTER_WIDTH = 154;
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<MovieInfo> movies;
@@ -35,9 +37,10 @@ public class ImageAdapter extends ArrayAdapter <MovieInfo>{
             convertView = inflater.inflate(R.layout.grid_item, parent, false);
         }
 
+        String posterAddress = Utility.makeFullPath(POSTER_WIDTH, movies.get(position).getPosterAddress());
         Picasso
             .with(context)
-            .load(movies.get(position).getPosterAddress())
+            .load(posterAddress)
             .fit()
             .into((ImageView) convertView);
 

@@ -152,7 +152,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         for(int i = 0; i < movieArray.length(); i++) {
             JSONObject nextMovieJSON = movieArray.getJSONObject(i);
             resultInfo[i] = new MovieInfo();
-            resultInfo[i].setPosterAddress(makeFullPath(nextMovieJSON.getString(POSTER_PATH)));
+            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
             resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
             resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
             resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
@@ -163,15 +163,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
 
 
         return resultInfo;
-    }
-
-    /**
-     * Make full path from partPath. May be complicated later
-     * @param partPath - part path to poster
-     * @return full path to poster
-     */
-    private String makeFullPath(String partPath) {
-        return  "http://image.tmdb.org/t/p/" + "w154" + partPath;
     }
 
     /**
