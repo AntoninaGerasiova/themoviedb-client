@@ -40,6 +40,10 @@
 
         </activity>
 
+        <provider
+            android:authorities="com.example.android.finalproject"
+            android:name=".data.MovieProvider" />
+
     </application>
 
 </manifest>
