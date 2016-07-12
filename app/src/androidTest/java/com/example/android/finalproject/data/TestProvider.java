@@ -1,9 +1,12 @@
 package com.example.android.finalproject.data;
 
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.test.AndroidTestCase;
 
 import com.example.android.finalproject.data.MovieContract.MovieEntry;
@@ -76,6 +79,40 @@ public class TestProvider  extends AndroidTestCase {
         // vnd.android.cursor.dir/com.example.android.finalproject/movie
         assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.CONTENT_TYPE",
                 MovieEntry.CONTENT_TYPE, type);
+
+    }
+
+    /*
+       This test uses the database directly to insert and then uses the ContentProvider to
+       read out the data.  Uncomment this test to see if the basic weather query functionality
+       given in the ContentProvider is working correctly.
+    */
+    public void testBasicMovieQueries() {
+        // insert our test records into the database
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues testValues = TestUtilities.createMovieValues();
+        long locationRowId = TestUtilities.insertMovieValues(mContext);
+
+        // Test the basic content provider query
+        Cursor movieCursor = mContext.getContentResolver().query(
+                MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // Make sure we get the correct cursor out of the database
+        TestUtilities.validateCursor("testBasicMovieQueries, movie query", movieCursor, testValues);
+
+        // Has the NotificationUri been set correctly? --- we can only test this easily against API
+        // level 19 or greater because getNotificationUri was added in API level 19.
+        if ( Build.VERSION.SDK_INT >= 19 ) {
+            assertEquals("Error: Movie Query did not properly set NotificationUri",
+                    movieCursor.getNotificationUri(), MovieEntry.CONTENT_URI);
+        }
 
     }
 

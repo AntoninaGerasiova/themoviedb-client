@@ -1,7 +1,9 @@
 package com.example.android.finalproject.data;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import java.util.Map;
@@ -21,6 +23,27 @@ public class TestUtilities extends AndroidTestCase {
         testValues.put(MovieContract.MovieEntry.POPULARITY, 71.27);
         testValues.put(MovieContract.MovieEntry.RELEASE_DATE, "2016-05-20");
         return testValues;
+    }
+
+    static long insertMovieValues(Context context) {
+        // insert our test records into the database
+        MovieDbHelper dbHelper = new MovieDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues testValues = TestUtilities.createMovieValues();
+
+        long locationRowId;
+        locationRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, testValues);
+
+        // Verify we got a row back.
+        assertTrue("Error: Failure to insert Movie Values", locationRowId != -1);
+
+        return locationRowId;
+    }
+
+    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+        assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
+        validateCurrentRecord(error, valueCursor, expectedValues);
+        valueCursor.close();
     }
 
 
