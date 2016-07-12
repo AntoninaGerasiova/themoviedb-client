@@ -24,10 +24,10 @@ public class MovieContract {
         public static final String OVERVIEW = "overview";
         //average vote of the movie
         public static final String VOTE = "vote";
-        //release date of the movie
-        public static final String RELEASE_DATE = "release_date";
         //popularity of the movie
         public static final String POPULARITY = "popularity";
+        //release date of the movie
+        public static final String RELEASE_DATE = "release_date";
 
     }
 }
