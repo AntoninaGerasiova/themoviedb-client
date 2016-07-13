@@ -10,9 +10,40 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.example.android.finalproject.data.MovieContract.MovieEntry;
 public class TestProvider  extends AndroidTestCase {
+
+    public static final String LOG_TAG = TestProvider.class.getSimpleName();
+
+    /*
+      This helper function deletes all records from both database tables using the ContentProvider.
+      It also queries the ContentProvider to make sure that the database has been successfully
+      deleted, so it cannot be used until the Query and Delete functions have been written
+      in the ContentProvider.
+
+      Students: Replace the calls to deleteAllRecordsFromDB with this one after you have written
+      the delete functionality in the ContentProvider.
+    */
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(
+                MovieEntry.CONTENT_URI,
+                null,
+                null
+        );
+
+
+        Cursor cursor = mContext.getContentResolver().query(
+                MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+        assertEquals("Error: Records not deleted from Movie table during delete", 0, cursor.getCount());
+        cursor.close();
+    }
 
     /*
        This helper function deletes all records from all database tables using the database
@@ -31,7 +62,7 @@ public class TestProvider  extends AndroidTestCase {
         I have implemented delete functionality there.
      */
     public void deleteAllRecords() {
-        deleteAllRecordsFromDB();
+        deleteAllRecordsFromProvider();
     }
 
     // Since we want each test to start with a clean slate, run deleteAllRecords
@@ -123,7 +154,54 @@ public class TestProvider  extends AndroidTestCase {
         see if your update movie is functioning correctly.
      */
     public void testUpdateMovie() {
+        ContentValues values = TestUtilities.createMovieValues();
 
+        Uri movieUri = mContext.getContentResolver().
+                insert(MovieEntry.CONTENT_URI, values);
+        long movieRowId = ContentUris.parseId(movieUri);
+
+        // Verify we got a row back.
+        assertTrue(movieRowId != -1);
+        Log.d(LOG_TAG, "New row id: " + movieRowId);
+
+
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(MovieEntry._ID, movieRowId);
+        updatedValues.put(MovieEntry.TITLE, "Unknown film");
+
+
+        // Create a cursor with observer to make sure that the content provider is notifying
+        // the observers as expected
+        Cursor movieCursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI, null, null, null, null);
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        movieCursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                 MovieEntry.CONTENT_URI, updatedValues, MovieEntry._ID + "= ?",
+                 new String[]{Long.toString(movieRowId)});
+        assertEquals(count, 1);
+
+        // Test to make sure our observer is called.  If not, we throw an assertion.
+        //
+        // Students: If your code is failing here, it means that your content provider
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        movieCursor.unregisterContentObserver(tco);
+        movieCursor.close();
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                MovieEntry.CONTENT_URI,
+                null,   // projection
+                MovieEntry._ID + " = " + movieRowId,
+                null,   // Values for the "where" clause
+                null    // sort order
+        );
+        TestUtilities.validateCursor("testUpdateMovie.  Error validating movie entry update.",
+                cursor, updatedValues);
+
+        cursor.close();
     }
 
     public void testInsertReadProvider() {
@@ -159,6 +237,22 @@ public class TestProvider  extends AndroidTestCase {
         TestUtilities.validateCursor("testInsertReadProvider. Error validating MovieEntry.",
                 cursor, testValues);
 
+    }
+
+    // Make sure we can still delete after adding/updating stuff
+    //
+    // Student: Uncomment this test after you have completed writing the delete functionality
+    // in your provider.  It relies on insertions with testInsertReadProvider, so insert and
+    // query functionality must also be complete before this test can be used.
+    public void testDeleteRecords() {
+        testInsertReadProvider();
+
+        // Register a content observer for our location delete.
+        TestUtilities.TestContentObserver movieObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, movieObserver);
+        deleteAllRecordsFromProvider();
+        movieObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(movieObserver);
     }
 
 }
