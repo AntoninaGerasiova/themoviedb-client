@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.finalproject.info.MovieInfo;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -16,6 +17,12 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivityFragment extends Fragment {
     public static final int POSTER_WIDTH = 154;
+
+    private TextView mTitleView;
+    private ImageView mPosterView;
+    private TextView mOverviewView;
+    private TextView mRatingView;
+    private TextView mReleaseView;
 
     public DetailActivityFragment() {
     }
@@ -26,41 +33,25 @@ public class DetailActivityFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        // find all views
+        mTitleView = (TextView) rootView.findViewById(R.id.title);
+        mPosterView = (ImageView)rootView.findViewById(R.id.poster);
+        mOverviewView = (TextView) rootView.findViewById(R.id.overview);
+        mRatingView = (TextView) rootView.findViewById(R.id.vote_average);
+        mReleaseView =  (TextView) rootView.findViewById(R.id.release_date);
 
-         //Get information from launching intent and fill the views of the fragment_detail.xml
+
+        //Get information from launching intent and fill the views of the fragment_detail.xml
         Intent intent = getActivity().getIntent();
-        if(intent != null) {
-            if (intent.hasExtra(MainActivityFragment.TITLE)) {
-                String title = intent.getStringExtra(MainActivityFragment.TITLE);
-                 ((TextView) rootView.findViewById(R.id.title)).setText(title);
-            }
-            if (intent.hasExtra(MainActivityFragment.POSTER_PATH)) {
-                String posterAddress = Utility.makeFullPath(POSTER_WIDTH, intent.getStringExtra(MainActivityFragment.POSTER_PATH));
-                ImageView posterView = (ImageView)rootView.findViewById(R.id.poster);
-                Picasso.with(getActivity().getApplicationContext()).load(posterAddress)
-                        .into(posterView);
-
-            }
-            if (intent.hasExtra(MainActivityFragment.OVERVIEW)) {
-                String overview = intent.getStringExtra(MainActivityFragment.OVERVIEW);
-                 ((TextView) rootView.findViewById(R.id.overview)).setText(overview);
-            }
-
-            if (intent.hasExtra(MainActivityFragment.VOTE_AVERAGE)) {
-                String voteAverage = getString(R.string.rating)
-                        + intent.getStringExtra(MainActivityFragment.VOTE_AVERAGE);
-                 ((TextView) rootView.findViewById(R.id.vote_average)).
-                         setText(voteAverage);
-            }
-
-            if (intent.hasExtra(MainActivityFragment.RELEASE_DATE)) {
-                String releaseDate = getString(R.string.release_date)
-                        +intent.getStringExtra(MainActivityFragment.RELEASE_DATE);
-                        ((TextView) rootView.findViewById(R.id.release_date)).
-                         setText(releaseDate);
-            }
+        if (intent != null && intent.hasExtra(MainActivityFragment.MOVIE_INFO)) {
+            MovieInfo movieInfo = intent.getParcelableExtra(MainActivityFragment.MOVIE_INFO);
+            mTitleView.setText(movieInfo.getTitle());
+            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, movieInfo.getPosterAddress());
+            Picasso.with(getActivity().getApplicationContext()).load(posterAddress).into(mPosterView);
+            mOverviewView.setText(movieInfo.getOverview());
+            mRatingView.setText(String.valueOf(movieInfo.getVoteAverage()));
+            mReleaseView.setText(movieInfo.getReleaseDate());
         }
-
         return rootView;
     }
 }

@@ -18,11 +18,7 @@ import java.util.ArrayList;
  */
 public class MainActivityFragment extends Fragment {
     //public constants for Intent's extras
-    public static final String TITLE = "title";
-    public static final String POSTER_PATH = "posterPath";
-    public static final String OVERVIEW = "overview";
-    public static final String VOTE_AVERAGE = "vote_average";
-    public static final String RELEASE_DATE = "release_date";
+    public static final String MOVIE_INFO = "movie_info";
 
     private ImageAdapter mAdapter;
 
@@ -47,11 +43,7 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MovieInfo movieInfo = mAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(TITLE, movieInfo.getTitle());
-                intent.putExtra(POSTER_PATH, movieInfo.getPosterAddress());
-                intent.putExtra(OVERVIEW, movieInfo.getOverview());
-                intent.putExtra(VOTE_AVERAGE, movieInfo.getVoteAverage());
-                intent.putExtra(RELEASE_DATE, movieInfo.getReleaseDate());
+                intent.putExtra(MOVIE_INFO, movieInfo);
                 startActivity(intent);
 
             }
