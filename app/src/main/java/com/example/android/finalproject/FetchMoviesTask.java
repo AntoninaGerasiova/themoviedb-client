@@ -133,14 +133,8 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
     {
 
         // These are the names of the JSON objects that need to be extracted.
+
         final String RESULTS = "results";
-        final String POSTER_PATH = "poster_path";
-        final String BACKDROP_PATH = "backdrop_path";
-        final String TITLE = "title";
-        final String OVERVIEW = "overview";
-        final String VOTE_AVERAGE = "vote_average";
-        final String RELEASE_DATE = "release_date";
-        final String POPULARITY = "popularity";
 
         JSONObject resultJson = new JSONObject(resultJsonStr);
         JSONArray movieArray = resultJson.getJSONArray(RESULTS);
@@ -150,14 +144,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         //populate movieArray with MovieInfo objects. Get info from JSON string
         for(int i = 0; i < movieArray.length(); i++) {
             JSONObject nextMovieJSON = movieArray.getJSONObject(i);
-            resultInfo[i] = new MovieInfo();
-            resultInfo[i].setPosterAddress(nextMovieJSON.getString(POSTER_PATH));
-            resultInfo[i].setBackdropAddress(nextMovieJSON.getString(BACKDROP_PATH));
-            resultInfo[i].setTitle(nextMovieJSON.getString(TITLE));
-            resultInfo[i].setOverview(nextMovieJSON.getString(OVERVIEW));
-            resultInfo[i].setVoteAverage(nextMovieJSON.getString(VOTE_AVERAGE));
-            resultInfo[i].setReleaseDate(nextMovieJSON.getString(RELEASE_DATE));
-            resultInfo[i].setPopularity(nextMovieJSON.getString(POPULARITY));
+            resultInfo[i] = new MovieInfo(nextMovieJSON);
             Log.v(LOG_TAG, resultInfo[i].toString());
         }
 
