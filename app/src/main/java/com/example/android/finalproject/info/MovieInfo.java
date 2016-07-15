@@ -1,7 +1,10 @@
 package com.example.android.finalproject.info;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.example.android.finalproject.data.MovieContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,6 +110,23 @@ public class MovieInfo implements Parcelable {
 
     public void setBackdropAddress(String backdropAddress) {
         this.backdropAddress = backdropAddress;
+    }
+
+    /**
+     *
+     * @return ContentValues object ready to insert to movie table with MovieProvider
+     */
+    public ContentValues createContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.MOVIE_ID, getMovieId());
+        contentValues.put(MovieContract.MovieEntry.TITLE, getTitle());
+        contentValues.put(MovieContract.MovieEntry.POSTER, getPosterAddress());
+        contentValues.put(MovieContract.MovieEntry.BACKDROP, getBackdropAddress());
+        contentValues.put(MovieContract.MovieEntry.OVERVIEW, getOverview());
+        contentValues.put(MovieContract.MovieEntry.VOTE, getVoteAverage());
+        contentValues.put(MovieContract.MovieEntry.POPULARITY, getPopularity());
+        contentValues.put(MovieContract.MovieEntry.RELEASE_DATE, getReleaseDate());
+        return contentValues;
     }
 
     @Override

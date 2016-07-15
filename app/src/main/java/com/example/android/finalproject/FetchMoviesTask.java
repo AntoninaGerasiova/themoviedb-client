@@ -145,7 +145,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         for(int i = 0; i < movieArray.length(); i++) {
             JSONObject nextMovieJSON = movieArray.getJSONObject(i);
             resultInfo[i] = new MovieInfo(nextMovieJSON);
-            Log.v(LOG_TAG, resultInfo[i].toString());
+            //Log.v(LOG_TAG, resultInfo[i].toString());
         }
 
 

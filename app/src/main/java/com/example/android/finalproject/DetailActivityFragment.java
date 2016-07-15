@@ -1,8 +1,13 @@
 package com.example.android.finalproject;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,14 +17,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 import com.squareup.picasso.Picasso;
+
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class DetailActivityFragment extends Fragment {
+    private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
     public static final int POSTER_WIDTH = 154;
+
+    //MovieInfo object
+    private MovieInfo mMovieInfo;
+
+    private Cursor mMovieCursor;
+    //whether movie is in favorite or not
+    private boolean mFavorite;
 
     private TextView mTitleView;
     private ImageView mPosterView;
@@ -37,6 +52,13 @@ public class DetailActivityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_detail, menu);
+        MenuItem favoriteMenuItem = menu.findItem(R.id.action_favorite);
+        if (mFavorite) {
+            favoriteMenuItem.setIcon(R.drawable.abc_btn_rating_star_on_mtrl_alpha);
+        }
+        else {
+            favoriteMenuItem.setIcon(R.drawable.abc_btn_rating_star_off_mtrl_alpha);
+        }
     }
 
     @Override
@@ -46,7 +68,44 @@ public class DetailActivityFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_favorite) {
-            item.setIcon(R.drawable.abc_btn_rating_star_on_mtrl_alpha);
+            if (!mFavorite) {
+                //add movie to database
+                Log.v(LOG_TAG, mMovieInfo.toString());
+                ContentValues contentValues = mMovieInfo.createContentValues();
+                Log.v(LOG_TAG, contentValues.toString());
+                Uri movieUri = getActivity().getContentResolver().insert(
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        mMovieInfo.createContentValues());
+                long locationRowId = ContentUris.parseId(movieUri);
+                ///just test - to delete
+                Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    MovieContract.MovieEntry.MOVIE_ID + "= ?",
+                    new String[]{Integer.toString(mMovieInfo.getMovieId())},
+                    null);
+
+                Log.v(LOG_TAG, movieCursor.toString());
+
+                //end of test
+
+                if(locationRowId != -1) {
+                    mFavorite = true;
+                    item.setIcon(R.drawable.abc_btn_rating_star_on_mtrl_alpha);
+                }
+            }
+            else {
+                //remove movie to database
+                int rowsDeleted = getActivity().getContentResolver().delete(
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        MovieContract.MovieEntry.MOVIE_ID + "= ?",
+                        new String[]{Integer.toString(mMovieInfo.getMovieId())});
+                Log.v(LOG_TAG, String.valueOf(rowsDeleted));
+                if (rowsDeleted != 0) {
+                    mFavorite = false;
+                    item.setIcon(R.drawable.abc_btn_rating_star_off_mtrl_alpha);
+                }
+
+            }
 
             return true;
         }
@@ -73,17 +132,32 @@ public class DetailActivityFragment extends Fragment {
         //Get information from launching intent and fill the views of the fragment_detail.xml
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(MainActivityFragment.MOVIE_INFO)) {
-            MovieInfo movieInfo = intent.getParcelableExtra(MainActivityFragment.MOVIE_INFO);
-            mTitleView.setText(movieInfo.getTitle());
-            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, movieInfo.getPosterAddress());
+            //get MovieInfo object from intent
+            mMovieInfo = intent.getParcelableExtra(MainActivityFragment.MOVIE_INFO);
+
+            //fill all the views
+            mTitleView.setText(mMovieInfo.getTitle());
+            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, mMovieInfo.getPosterAddress());
             Picasso.with(getActivity().getApplicationContext()).load(posterAddress).into(mPosterView);
-            mOverviewView.setText(movieInfo.getOverview());
-            mRatingView.setText(String.valueOf(movieInfo.getVoteAverage()));
-            mReleaseView.setText(movieInfo.getReleaseDate());
+            mOverviewView.setText(mMovieInfo.getOverview());
+            mRatingView.setText(String.valueOf(mMovieInfo.getVoteAverage()));
+            mReleaseView.setText(mMovieInfo.getReleaseDate());
+
+            //get cursor for this movie using MovieProvider
+            int movieId = mMovieInfo.getMovieId();
+            mMovieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    MovieContract.MovieEntry.MOVIE_ID + "= ?",
+                    new String[]{Integer.toString(movieId)},
+                    null);
+
+            //if there is the movie in the database than it was already marked is favorite
+            if (mMovieCursor != null && mMovieCursor.moveToFirst() != false)
+                mFavorite = true;
+
+
         }
         return rootView;
     }
-
-
 
 }

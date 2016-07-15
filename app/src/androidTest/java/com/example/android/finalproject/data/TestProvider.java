@@ -210,14 +210,14 @@ public class TestProvider  extends AndroidTestCase {
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, tco);
-        Uri locationUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, testValues);
+        Uri movieUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, testValues);
 
         // Did our content observer get called?  If this fails, your insert movie
         // isn't calling getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
 
-        long locationRowId = ContentUris.parseId(locationUri);
+        long locationRowId = ContentUris.parseId(movieUri);
 
                 // Verify we got a row back.
         assertTrue(locationRowId != -1);
