@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
@@ -80,17 +81,20 @@ public class DetailActivityFragment extends Fragment {
                 ///just test - to delete
                 Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                     null,
-                    MovieContract.MovieEntry.MOVIE_ID + "= ?",
-                    new String[]{Integer.toString(mMovieInfo.getMovieId())},
+                    MovieContract.MovieEntry._ID + "= ?",
+                    new String[]{Long.toString(locationRowId)},
                     null);
 
-                Log.v(LOG_TAG, movieCursor.toString());
+                MovieInfo testMovie = new MovieInfo(movieCursor);
+                Log.v(LOG_TAG, testMovie.toString());
 
                 //end of test
 
                 if(locationRowId != -1) {
                     mFavorite = true;
                     item.setIcon(R.drawable.abc_btn_rating_star_on_mtrl_alpha);
+                    Toast.makeText(getActivity(), "The movie has been added to favorite", Toast.LENGTH_LONG).
+                            show();
                 }
             }
             else {
@@ -103,6 +107,8 @@ public class DetailActivityFragment extends Fragment {
                 if (rowsDeleted != 0) {
                     mFavorite = false;
                     item.setIcon(R.drawable.abc_btn_rating_star_off_mtrl_alpha);
+                    Toast.makeText(getActivity(), "The movie has been removed from favorite", Toast.LENGTH_LONG).
+                            show();
                 }
 
             }

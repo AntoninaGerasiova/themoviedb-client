@@ -1,6 +1,7 @@
 package com.example.android.finalproject.info;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,7 +25,7 @@ public class MovieInfo implements Parcelable {
     final String POPULARITY = "popularity";
     final String RELEASE_DATE = "release_date";
 
-    private Integer movieId;
+    private int movieId;
     private String posterAddress;
     private String backdropAddress;
     private String title;
@@ -47,7 +48,19 @@ public class MovieInfo implements Parcelable {
 
     }
 
-    public Integer getMovieId() {
+    public MovieInfo(Cursor cursor) {
+        cursor.moveToFirst();
+        setMovieId(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)));
+        setPosterAddress(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER)));
+        setBackdropAddress(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP)));
+        setTitle(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.TITLE)));
+        setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.OVERVIEW)));
+        setVoteAverage(cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.VOTE)));
+        setPopularity(cursor.getDouble(cursor.getColumnIndex(MovieContract.MovieEntry.POPULARITY)));
+        setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.RELEASE_DATE)));
+    }
+
+    public int getMovieId() {
         return movieId;
     }
 
@@ -80,7 +93,7 @@ public class MovieInfo implements Parcelable {
     }
 
 
-    public void setMovieId(Integer movieId) {
+    public void setMovieId(int movieId) {
         this.movieId = movieId;
     }
 
@@ -128,6 +141,7 @@ public class MovieInfo implements Parcelable {
         contentValues.put(MovieContract.MovieEntry.RELEASE_DATE, getReleaseDate());
         return contentValues;
     }
+
 
     @Override
     public String toString() {
