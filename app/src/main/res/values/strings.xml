@@ -9,6 +9,10 @@
     <string name="release_date">Release date:&#160;</string>
 
 
+
+    <!-- Toast -->
+    <string name="toast_add_movie">The movie has been added to favorite</string>
+    <string name="toast_delete_movie">The movie has been removed from favorite</string>
     <!-- Settings -->
     <!-- Label for the order preference [CHAR LIMIT=30] -->
     <string name="pref_order_label">Movies Order</string>
@@ -19,14 +23,20 @@
     <!-- Label for order by popularity option in order preference [CHAR LIMIT=25] -->
     <string name="pref_order_label_popularity">By Popularity</string>
 
+    <!-- Label for favorite movies in order preference [CHAR LIMIT=25] -->
+    <string name="pref_order_label_favorite">By Favorites</string>
+
     <!-- Key name for the order preference  [CHAR LIMIT=NONE] -->
     <string name="pref_order_key" translatable="false">order</string>
 
     <!-- Value in SharedPreferences for order by rating option [CHAR LIMIT=NONE] -->
-    <string name="pref_order_vote" translatable="false">metric</string>
+    <string name="pref_order_vote" translatable="false">vote</string>
 
     <!-- Value in SharedPreferences for order by popularity option [CHAR LIMIT=NONE] -->
-    <string name="pref_order_popularity" translatable="false">imperial</string>
+    <string name="pref_order_popularity" translatable="false">popularity</string>
+
+    <!-- Value in SharedPreferences for order by favorite option [CHAR LIMIT=NONE] -->
+    <string name="pref_order_favorite" translatable="false">favorite</string>
 
 
 </resources>

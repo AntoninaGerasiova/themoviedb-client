@@ -78,22 +78,11 @@ public class DetailActivityFragment extends Fragment {
                         MovieContract.MovieEntry.CONTENT_URI,
                         mMovieInfo.createContentValues());
                 long locationRowId = ContentUris.parseId(movieUri);
-                ///just test - to delete
-                Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                    null,
-                    MovieContract.MovieEntry._ID + "= ?",
-                    new String[]{Long.toString(locationRowId)},
-                    null);
-
-                MovieInfo testMovie = new MovieInfo(movieCursor);
-                Log.v(LOG_TAG, testMovie.toString());
-
-                //end of test
 
                 if(locationRowId != -1) {
                     mFavorite = true;
                     item.setIcon(R.drawable.abc_btn_rating_star_on_mtrl_alpha);
-                    Toast.makeText(getActivity(), "The movie has been added to favorite", Toast.LENGTH_LONG).
+                    Toast.makeText(getActivity(), getString(R.string.toast_add_movie), Toast.LENGTH_LONG).
                             show();
                 }
             }
@@ -107,7 +96,7 @@ public class DetailActivityFragment extends Fragment {
                 if (rowsDeleted != 0) {
                     mFavorite = false;
                     item.setIcon(R.drawable.abc_btn_rating_star_off_mtrl_alpha);
-                    Toast.makeText(getActivity(), "The movie has been removed from favorite", Toast.LENGTH_LONG).
+                    Toast.makeText(getActivity(), getString(R.string.toast_delete_movie), Toast.LENGTH_LONG).
                             show();
                 }
 
