@@ -42,5 +42,16 @@ public class Utility {
         else return null;
     }
 
-
+    public static boolean ifOrderByFavorite(Context context) {
+                //get sort preference
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(context);
+        String sortType = sharedPrefs.getString(
+                context.getString(R.string.pref_order_key),
+                context.getString(R.string.pref_order_vote));
+        if (sortType.equals(context.getString(R.string.pref_order_favorite))) {
+            return  true;
+        }
+        return false;
+    }
 }

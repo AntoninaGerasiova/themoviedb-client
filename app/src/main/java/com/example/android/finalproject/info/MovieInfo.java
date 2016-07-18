@@ -49,7 +49,6 @@ public class MovieInfo implements Parcelable {
     }
 
     public MovieInfo(Cursor cursor) {
-        cursor.moveToFirst();
         setMovieId(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)));
         setPosterAddress(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER)));
         setBackdropAddress(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP)));

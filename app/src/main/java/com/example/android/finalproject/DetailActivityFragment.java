@@ -32,8 +32,6 @@ public class DetailActivityFragment extends Fragment {
 
     //MovieInfo object
     private MovieInfo mMovieInfo;
-
-    private Cursor mMovieCursor;
     //whether movie is in favorite or not
     private boolean mFavorite;
 
@@ -140,15 +138,17 @@ public class DetailActivityFragment extends Fragment {
 
             //get cursor for this movie using MovieProvider
             int movieId = mMovieInfo.getMovieId();
-            mMovieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+            Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                     null,
                     MovieContract.MovieEntry.MOVIE_ID + "= ?",
                     new String[]{Integer.toString(movieId)},
                     null);
 
             //if there is the movie in the database than it was already marked is favorite
-            if (mMovieCursor != null && mMovieCursor.moveToFirst() != false)
+            if (movieCursor != null && movieCursor.moveToFirst() != false)
                 mFavorite = true;
+
+            movieCursor.close();
 
 
         }

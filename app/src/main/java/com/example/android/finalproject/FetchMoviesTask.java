@@ -2,11 +2,13 @@ package com.example.android.finalproject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 
 import org.json.JSONArray;
@@ -31,7 +33,21 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
 
     @Override
     protected MovieInfo[] doInBackground(Void... params) {
+        if (Utility.ifOrderByFavorite(mContext)) {
+            return  getMovieListFromLocalBase();
+        }
+        else {
+            return getMovieListFromInternet();
+        }
 
+    }
+
+
+    /**
+     * get movie list from themoviedb.org and populate MovieInfo[] with information for these movies
+     * @return populated MovieInfo[]
+     */
+    private MovieInfo[] getMovieListFromInternet () {
 
         // Will contain the raw JSON response as a string.
         String resultJsonStr = getJsonString();
@@ -48,6 +64,35 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
         return null;
     }
 
+    /**
+     * get movie list from local db (using MovieProvider) and populate MovieInfo[] with information for these movies
+     * @return populated MovieInfo[]
+     */
+    private MovieInfo[] getMovieListFromLocalBase () {
+        Cursor movieCursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+
+        if (movieCursor != null) {
+            MovieInfo[] resultInfo = new MovieInfo[movieCursor.getCount()];
+            int i = 0;
+            try {
+                while (movieCursor.moveToNext()) {
+                    resultInfo[i] = new MovieInfo(movieCursor);
+                    //Log.v(LOG_TAG, resultInfo[i].toString());
+                    i++;
+                }
+            }
+            finally {
+                movieCursor.close();
+            }
+            return resultInfo;
+        }
+        return null;
+
+    }
 
 
     /**
@@ -158,7 +203,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
      */
     @Override
     protected void onPostExecute(MovieInfo[] result) {
-        //if it is som result populate adapter with MovieInfo objects
+        //if it is some result populate adapter with MovieInfo objects
         if (result != null) {
             mAdapter.clear();
             for (MovieInfo movie : result) {
