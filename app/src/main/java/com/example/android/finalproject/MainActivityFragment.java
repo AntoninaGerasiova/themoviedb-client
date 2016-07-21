@@ -1,6 +1,8 @@
 package com.example.android.finalproject;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,8 +24,17 @@ public class MainActivityFragment extends Fragment {
 
     private ImageAdapter mAdapter;
 
+        public interface MovieSelectedCallback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(MovieInfo movie);
+    }
+
     public MainActivityFragment() {
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,9 +53,18 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MovieInfo movieInfo = mAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(MOVIE_INFO, movieInfo);
-                startActivity(intent);
+                MovieSelectedCallback callback;
+                try {
+                    callback = (MovieSelectedCallback) getActivity();
+                } catch (ClassCastException e) {
+                    throw new ClassCastException(getActivity().getLocalClassName() + " must implement MovieSelectedCallback");
+                }
+
+                //Intent intent = new Intent(getActivity(), DetailActivity.class);
+                //intent.putExtra(MOVIE_INFO, movieInfo);
+                //startActivity(intent);
+
+                callback.onItemSelected(movieInfo);
 
             }
         });

@@ -30,6 +30,9 @@ public class DetailActivityFragment extends Fragment {
     private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
     public static final int POSTER_WIDTH = 154;
 
+    //key for getArguments
+    private static final String MOVIE_INFO = "movie_info";
+
     //MovieInfo object
     private MovieInfo mMovieInfo;
     //whether movie is in favorite or not
@@ -122,11 +125,13 @@ public class DetailActivityFragment extends Fragment {
         mReleaseView =  (TextView) rootView.findViewById(R.id.release_date);
 
 
-        //Get information from launching intent and fill the views of the fragment_detail.xml
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(MainActivityFragment.MOVIE_INFO)) {
+        //Get information from args and fill the views of the fragment_detail.xml
+
+        Bundle arguments = getArguments();
+
+        if (arguments != null) {
             //get MovieInfo object from intent
-            mMovieInfo = intent.getParcelableExtra(MainActivityFragment.MOVIE_INFO);
+            mMovieInfo = arguments.getParcelable(DetailActivityFragment.MOVIE_INFO);
 
             //fill all the views
             mTitleView.setText(mMovieInfo.getTitle());

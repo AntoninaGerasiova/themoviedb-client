@@ -10,8 +10,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.android.finalproject.info.MovieInfo;
+
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.MovieSelectedCallback{
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+
+    //public constants for Intent's extras
+    public static final String MOVIE_INFO = "movie_info";
+
+
 
     boolean mTwoPane;
 
@@ -63,5 +70,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSelected(MovieInfo movie) {
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            Bundle args = new Bundle();
+            args.putParcelable(MainActivityFragment.MOVIE_INFO, movie);
+
+            DetailActivityFragment fragment = new DetailActivityFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+
+        }
+        else {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(MOVIE_INFO, movie);
+            startActivity(intent);
+        }
     }
 }

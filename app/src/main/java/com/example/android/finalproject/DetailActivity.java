@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.android.finalproject.info.MovieInfo;
+
 public class DetailActivity extends AppCompatActivity {
 
     @Override
@@ -19,9 +21,23 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Create the detail fragment and add it to the activity
+        // using a fragment transaction.
+
+        DetailActivityFragment fragment = new DetailActivityFragment();
+        Intent intent = getIntent();
+
         if (savedInstanceState == null) {
+            if (intent != null && intent.hasExtra(MainActivity.MOVIE_INFO)) {
+                MovieInfo movie =  intent.getParcelableExtra(MainActivity.MOVIE_INFO);
+                Bundle args = new Bundle();
+                args.putParcelable(MainActivityFragment.MOVIE_INFO, movie);
+                fragment.setArguments(args);
+            }
+
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, new DetailActivityFragment())
+                    .add(R.id.movie_detail_container, fragment)
                     .commit();
         }
     }

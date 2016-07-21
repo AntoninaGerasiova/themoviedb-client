@@ -10,6 +10,11 @@
         android:id="@+id/posters_gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="2"/>
+        android:numColumns="auto_fit"
+        android:columnWidth="@dimen/grid_item_movie_width"
+        android:verticalSpacing="@dimen/grid_item_movie_spacing"
+        android:horizontalSpacing="@dimen/grid_item_movie_spacing"
+        android:padding="@dimen/grid_item_movie_spacing"
+        android:drawSelectorOnTop="true"/>
 
 </RelativeLayout>
