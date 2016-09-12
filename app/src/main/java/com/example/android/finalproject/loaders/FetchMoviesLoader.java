@@ -1,13 +1,16 @@
-package com.example.android.finalproject;
+package com.example.android.finalproject.loaders;
+
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+import android.os.Bundle;
+import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import com.example.android.finalproject.BuildConfig;
+import com.example.android.finalproject.FetchMoviesTask;
+import com.example.android.finalproject.Utility;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 
@@ -22,25 +25,42 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//TODO - delete this class when I'm sure I don't need it
-public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
-    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+/**
+ * Created by tony on 22.07.16.
+ */
+public class FetchMoviesLoader extends AsyncTaskLoader<MovieInfo[]> {
+
     Context mContext;
-    ImageAdapter mAdapter;
-    public FetchMoviesTask (Context context, ImageAdapter adapter) {
+    private final String LOG_TAG = FetchMoviesLoader.class.getSimpleName();
+
+    public FetchMoviesLoader(Context context) {
+        super(context);
         mContext = context;
-        mAdapter = adapter;
     }
 
+    // as I understand  call of forceLoad() is mandatory for class which extends AsyncTaskLoader
+    //or it never starts loadInBackground()
     @Override
-    protected MovieInfo[] doInBackground(Void... params) {
+    protected void onStartLoading() {
+        super.onStartLoading();
+        Log.d(LOG_TAG, hashCode() + " onStartLoading");
+        forceLoad();
+    }
+
+
+    /**
+     * there is all loading take place
+     * @return array MovieInfo[] filled with information about movies
+     */
+    @Override
+    public MovieInfo[] loadInBackground() {
+        Log.v(LOG_TAG, "Start loadInBackground()");
         if (Utility.ifOrderByFavorite(mContext)) {
             return  getMovieListFromLocalBase();
         }
         else {
             return getMovieListFromInternet();
         }
-
     }
 
 
@@ -71,10 +91,10 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
      */
     private MovieInfo[] getMovieListFromLocalBase () {
         Cursor movieCursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    null);
+                null,
+                null,
+                null,
+                null);
 
         if (movieCursor != null) {
             MovieInfo[] resultInfo = new MovieInfo[movieCursor.getCount()];
@@ -196,20 +216,5 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, MovieInfo[]> {
 
 
         return resultInfo;
-    }
-
-    /**
-     * add posters to the adapter
-     * @param result
-     */
-    @Override
-    protected void onPostExecute(MovieInfo[] result) {
-        //if it is some result populate adapter with MovieInfo objects
-        if (result != null) {
-            mAdapter.clear();
-            for (MovieInfo movie : result) {
-                mAdapter.add(movie);
-            }
-        }
     }
 }

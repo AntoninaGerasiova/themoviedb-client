@@ -164,7 +164,6 @@ public class MovieInfo implements Parcelable {
 
 
     //parcelable part
-
     public MovieInfo(Parcel in) {
         setMovieId(in.readInt());
         setPosterAddress(in.readString());

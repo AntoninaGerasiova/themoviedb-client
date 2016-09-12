@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivityFragment extends Fragment {
     private final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
-    public static final int POSTER_WIDTH = 154;
+    public static final int POSTER_WIDTH = 342;
 
     //key for getArguments
     private static final String MOVIE_INFO = "movie_info";
@@ -135,7 +135,7 @@ public class DetailActivityFragment extends Fragment {
 
             //fill all the views
             mTitleView.setText(mMovieInfo.getTitle());
-            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, mMovieInfo.getPosterAddress());
+            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, mMovieInfo.getBackdropAddress());
             Picasso.with(getActivity().getApplicationContext()).load(posterAddress).into(mPosterView);
             mOverviewView.setText(mMovieInfo.getOverview());
             mRatingView.setText(String.valueOf(mMovieInfo.getVoteAverage()));
