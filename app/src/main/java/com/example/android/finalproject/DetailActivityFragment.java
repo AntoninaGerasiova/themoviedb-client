@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,10 @@ import android.widget.Toast;
 
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
+import com.example.android.finalproject.info.Trailer;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 /**
@@ -158,6 +162,15 @@ public class DetailActivityFragment extends Fragment {
 
         }
         return rootView;
+    }
+
+    //AsyncTask to get trailers information
+    public class FetchTrailersTask extends AsyncTask<String, Void, List<Trailer>> {
+
+        @Override
+        protected List<Trailer> doInBackground(String... params) {
+            return null;
+        }
     }
 
 }

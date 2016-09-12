@@ -2,6 +2,7 @@ package com.example.android.finalproject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 /**
@@ -40,6 +41,24 @@ public class Utility {
             return "http://api.themoviedb.org/3/movie/popular?";
         }
         else return null;
+    }
+
+    /**
+     * construct URL to get trailers for movie with id movieId
+     * @param context context
+     * @param movieId - movie id for with we construct URL
+     * @return URL (as a String ) to get trailers for the movie with id movieId
+     */
+    public static String getTrailersURL(Context context, String movieId) {
+        //String baseTrailersURL = "http://api.themoviedb.org/3/movie/209112/videos";
+        final String baseTrailersURL = "http://api.themoviedb.org/3/movie/";
+        final String APIKEY_PARAM = "api_key";
+        Uri builtUri = Uri.parse(baseTrailersURL).buildUpon()
+                .appendPath(movieId)
+                .appendPath("videos")
+                .appendQueryParameter(APIKEY_PARAM,  BuildConfig.THEMOVIEDB_API_KEY)
+                .build();
+        return builtUri.toString();
     }
 
     public static boolean ifOrderByFavorite(Context context) {
