@@ -45,16 +45,15 @@ public class Utility {
 
     /**
      * construct URL to get trailers for movie with id movieId
-     * @param context context
      * @param movieId - movie id for with we construct URL
      * @return URL (as a String ) to get trailers for the movie with id movieId
      */
-    public static String getTrailersURL(Context context, String movieId) {
+    public static String getTrailersURL(Integer movieId) {
         //String baseTrailersURL = "http://api.themoviedb.org/3/movie/209112/videos";
         final String baseTrailersURL = "http://api.themoviedb.org/3/movie/";
         final String APIKEY_PARAM = "api_key";
         Uri builtUri = Uri.parse(baseTrailersURL).buildUpon()
-                .appendPath(movieId)
+                .appendPath(movieId.toString())
                 .appendPath("videos")
                 .appendQueryParameter(APIKEY_PARAM,  BuildConfig.THEMOVIEDB_API_KEY)
                 .build();

@@ -22,9 +22,19 @@ import android.widget.Toast;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 import com.example.android.finalproject.info.Trailer;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 
 /**
@@ -161,16 +171,49 @@ public class DetailActivityFragment extends Fragment {
 
 
         }
+
+        //fetch trailers
+        fetchTrailersTask();
         return rootView;
     }
 
-    //AsyncTask to get trailers information
-    public class FetchTrailersTask extends AsyncTask<String, Void, List<Trailer>> {
 
-        @Override
-        protected List<Trailer> doInBackground(String... params) {
-            return null;
-        }
+    private void fetchTrailersTask() {
+        String trailerURL = Utility.getTrailersURL(mMovieInfo.getMovieId());
+        Log.d(LOG_TAG, "trailerURL: " + trailerURL);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(trailerURL, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONArray trailersJSONArray = response.getJSONArray("results");
+                    Log.d(LOG_TAG, "trailersJSONArray: " + trailersJSONArray);
+                    ArrayList<Trailer> trailers = new ArrayList<>();
+                    for (int i = 0; i < trailersJSONArray.length(); i++) {
+
+                        JSONObject trailerJSON  = trailersJSONArray
+                                .getJSONObject(i);
+                        Trailer trailer = new Trailer(trailerJSON);
+                        Log.d(LOG_TAG, trailer.toString());
+                        trailers.add(trailer);
+
+                    }
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e(LOG_TAG, "Unable to fetch trailers. Status code: " + statusCode);
+            }
+
+        });
     }
+
 
 }

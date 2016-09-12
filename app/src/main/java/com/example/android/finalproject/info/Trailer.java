@@ -37,4 +37,15 @@ public class Trailer {
     public String getSite() { return site; }
 
     public String getType() { return type; }
+
+    @Override
+    public String toString() {
+        return "Trailer{" +
+                "id='" + id + '\'' +
+                ", key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", site='" + site + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }
