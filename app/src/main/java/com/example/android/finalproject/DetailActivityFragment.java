@@ -191,6 +191,8 @@ public class DetailActivityFragment extends Fragment {
             }
         });
 
+        //work with Reviews
+
         return rootView;
     }
 
@@ -198,10 +200,13 @@ public class DetailActivityFragment extends Fragment {
     public void onStart() {
         super.onStart();
         fetchTrailers();
+        fetchReviews();
     }
 
 
-
+    /**
+     * fetch trailers info for the movie from themoviedb.org
+     */
     private void fetchTrailers() {
         String trailerURL = Utility.getTrailersURL(mMovieInfo.getMovieId());
         //Log.d(LOG_TAG, "trailerURL: " + trailerURL);
@@ -213,15 +218,16 @@ public class DetailActivityFragment extends Fragment {
                 try {
                     JSONArray trailersJSONArray = response.getJSONArray("results");
                     //Log.d(LOG_TAG, "trailersJSONArray: " + trailersJSONArray);
-
+                    trailers.clear();
                     for (int i = 0; i < trailersJSONArray.length(); i++) {
 
                         JSONObject trailerJSON  = trailersJSONArray
                                 .getJSONObject(i);
                         Trailer trailer = new Trailer(trailerJSON);
-                        Log.d(LOG_TAG, trailer.toString());
+                        //Log.d(LOG_TAG, trailer.toString());
                         trailers.add(trailer);
                     }
+
                     trailerAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
@@ -234,6 +240,33 @@ public class DetailActivityFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 Log.e(LOG_TAG, "Unable to fetch trailers. Status code: " + statusCode);
+            }
+
+        });
+    }
+
+    private void fetchReviews() {
+        String reviewsURL = Utility.getReviewsURL(mMovieInfo.getMovieId());
+        //Log.d(LOG_TAG, "reviewsURL: " + reviewsURL);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(reviewsURL, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    JSONArray reviewsJSONArray = response.getJSONArray("results");
+                    Log.d(LOG_TAG, "reviewsJSONArray: " + reviewsJSONArray);
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e(LOG_TAG, "Unable to fetch reviews. Status code: " + statusCode);
             }
 
         });
