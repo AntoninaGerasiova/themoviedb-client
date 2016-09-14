@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +20,8 @@ import android.widget.Toast;
 
 import com.example.android.finalproject.adapters.TrailerAdapter;
 import com.example.android.finalproject.data.MovieContract;
-import com.example.android.finalproject.info.MovieInfo;
-import com.example.android.finalproject.info.Trailer;
+import com.example.android.finalproject.model.MovieInfo;
+import com.example.android.finalproject.model.Trailer;
 import com.linearlistview.LinearListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -33,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 

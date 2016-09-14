@@ -11,11 +11,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.android.finalproject.R;
 import com.example.android.finalproject.Utility;
-import com.example.android.finalproject.info.MovieInfo;
-import com.example.android.finalproject.info.Trailer;
+import com.example.android.finalproject.model.Trailer;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by tony on 13.09.16.

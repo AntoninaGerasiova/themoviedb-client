@@ -1,4 +1,4 @@
-package com.example.android.finalproject.info;
+package com.example.android.finalproject.model;
 
 import org.json.JSONException;
 import org.json.JSONObject;

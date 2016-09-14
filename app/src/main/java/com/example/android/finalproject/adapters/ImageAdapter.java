@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.example.android.finalproject.R;
 import com.example.android.finalproject.Utility;
-import com.example.android.finalproject.info.MovieInfo;
+import com.example.android.finalproject.model.MovieInfo;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

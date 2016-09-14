@@ -4,15 +4,13 @@ package com.example.android.finalproject.loaders;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.example.android.finalproject.BuildConfig;
-import com.example.android.finalproject.FetchMoviesTask;
 import com.example.android.finalproject.Utility;
 import com.example.android.finalproject.data.MovieContract;
-import com.example.android.finalproject.info.MovieInfo;
+import com.example.android.finalproject.model.MovieInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;

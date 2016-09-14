@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.android.finalproject.adapters.ImageAdapter;
-import com.example.android.finalproject.info.MovieInfo;
+import com.example.android.finalproject.model.MovieInfo;
 import com.example.android.finalproject.loaders.FetchMoviesLoader;
 
 import java.util.ArrayList;

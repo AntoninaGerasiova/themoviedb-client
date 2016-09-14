@@ -1,4 +1,4 @@
-package com.example.android.finalproject.info;
+package com.example.android.finalproject.model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,8 +9,6 @@ import com.example.android.finalproject.data.MovieContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Comparator;
 
 /**
  * Keeps information about class

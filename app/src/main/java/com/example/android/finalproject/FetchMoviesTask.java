@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.example.android.finalproject.adapters.ImageAdapter;
 import com.example.android.finalproject.data.MovieContract;
-import com.example.android.finalproject.info.MovieInfo;
+import com.example.android.finalproject.model.MovieInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
