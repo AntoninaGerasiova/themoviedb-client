@@ -13,6 +13,7 @@
     <string name="release_date_title">Released</string>
     <string name="rating_title">Rating</string>
     <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
 
     <!-- Toast -->
     <string name="toast_add_movie">The movie has been added to favorite</string>
