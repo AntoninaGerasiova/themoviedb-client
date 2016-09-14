@@ -19,12 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.finalproject.adapters.TrailerAdapter;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 import com.example.android.finalproject.info.Trailer;
+import com.linearlistview.LinearListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.SyncHttpClient;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -57,6 +58,11 @@ public class DetailActivityFragment extends Fragment {
     private TextView mOverviewView;
     private TextView mRatingView;
     private TextView mReleaseView;
+
+    //for trailers
+    private LinearListView lvTrailers;
+    private ArrayList<Trailer> trailers = new ArrayList<>();
+    private TrailerAdapter trailerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,44 +149,62 @@ public class DetailActivityFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-        if (arguments != null) {
-            //get MovieInfo object from intent
-            mMovieInfo = arguments.getParcelable(DetailActivityFragment.MOVIE_INFO);
+        if (arguments == null)  return rootView;
+        //get MovieInfo object from intent
+        mMovieInfo = arguments.getParcelable(DetailActivityFragment.MOVIE_INFO);
 
-            //fill all the views
-            mTitleView.setText(mMovieInfo.getTitle());
-            String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, mMovieInfo.getBackdropAddress());
-            Picasso.with(getActivity().getApplicationContext()).load(posterAddress).into(mPosterView);
-            mOverviewView.setText(mMovieInfo.getOverview());
-            mRatingView.setText(String.valueOf(mMovieInfo.getVoteAverage()));
-            mReleaseView.setText(mMovieInfo.getReleaseDate());
+        //fill all the views
+        mTitleView.setText(mMovieInfo.getTitle());
+        String  posterAddress = Utility.makeFullPath(POSTER_WIDTH, mMovieInfo.getBackdropAddress());
+        Picasso.with(getActivity().getApplicationContext()).load(posterAddress).into(mPosterView);
+        mOverviewView.setText(mMovieInfo.getOverview());
+        mRatingView.setText(String.valueOf(mMovieInfo.getVoteAverage()));
+        mReleaseView.setText(mMovieInfo.getReleaseDate());
 
-            //get cursor for this movie using MovieProvider
-            int movieId = mMovieInfo.getMovieId();
-            Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                    null,
-                    MovieContract.MovieEntry.MOVIE_ID + "= ?",
-                    new String[]{Integer.toString(movieId)},
-                    null);
+        //get cursor for this movie using MovieProvider
+        int movieId = mMovieInfo.getMovieId();
+        Cursor movieCursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                MovieContract.MovieEntry.MOVIE_ID + "= ?",
+                new String[]{Integer.toString(movieId)},
+                null);
 
-            //if there is the movie in the database than it was already marked is favorite
-            if (movieCursor != null && movieCursor.moveToFirst() != false)
-                mFavorite = true;
+        //if there is the movie in the database than it was already marked is favorite
+        if (movieCursor != null && movieCursor.moveToFirst() != false)
+            mFavorite = true;
 
-            movieCursor.close();
+        movieCursor.close();
 
 
-        }
 
-        //fetch trailers
-        fetchTrailersTask();
+        //work with trailers
+        trailerAdapter = new TrailerAdapter(getContext(), trailers);
+        lvTrailers = (LinearListView) rootView.findViewById(R.id.detail_trailers);
+        lvTrailers.setAdapter(trailerAdapter);
+        lvTrailers.setOnItemClickListener(new LinearListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(LinearListView parent, View view, int position, long id) {
+                Trailer trailer  = trailerAdapter.getItem(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey()));
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        fetchTrailers();
+    }
 
-    private void fetchTrailersTask() {
+
+
+    private void fetchTrailers() {
         String trailerURL = Utility.getTrailersURL(mMovieInfo.getMovieId());
-        Log.d(LOG_TAG, "trailerURL: " + trailerURL);
+        //Log.d(LOG_TAG, "trailerURL: " + trailerURL);
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(trailerURL, null, new JsonHttpResponseHandler() {
             @Override
@@ -188,8 +212,8 @@ public class DetailActivityFragment extends Fragment {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     JSONArray trailersJSONArray = response.getJSONArray("results");
-                    Log.d(LOG_TAG, "trailersJSONArray: " + trailersJSONArray);
-                    ArrayList<Trailer> trailers = new ArrayList<>();
+                    //Log.d(LOG_TAG, "trailersJSONArray: " + trailersJSONArray);
+
                     for (int i = 0; i < trailersJSONArray.length(); i++) {
 
                         JSONObject trailerJSON  = trailersJSONArray
@@ -197,8 +221,8 @@ public class DetailActivityFragment extends Fragment {
                         Trailer trailer = new Trailer(trailerJSON);
                         Log.d(LOG_TAG, trailer.toString());
                         trailers.add(trailer);
-
                     }
+                    trailerAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, e.getMessage(), e);

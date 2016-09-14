@@ -60,6 +60,10 @@ public class Utility {
         return builtUri.toString();
     }
 
+    public static String getYoutubeThumbnailURL(String key) {
+        return  "http://img.youtube.com/vi/" + key + "/0.jpg";
+    }
+
     public static boolean ifOrderByFavorite(Context context) {
                 //get sort preference
         SharedPreferences sharedPrefs =

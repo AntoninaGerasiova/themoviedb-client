@@ -1,19 +1,16 @@
 package com.example.android.finalproject;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.android.finalproject.adapters.ImageAdapter;
 import com.example.android.finalproject.info.MovieInfo;
 import com.example.android.finalproject.loaders.FetchMoviesLoader;
 

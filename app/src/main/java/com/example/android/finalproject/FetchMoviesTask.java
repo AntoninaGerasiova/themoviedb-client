@@ -1,13 +1,12 @@
 package com.example.android.finalproject;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.android.finalproject.adapters.ImageAdapter;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.info.MovieInfo;
 

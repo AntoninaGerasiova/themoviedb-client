@@ -1,4 +1,4 @@
-package com.example.android.finalproject;
+package com.example.android.finalproject.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.example.android.finalproject.R;
+import com.example.android.finalproject.Utility;
 import com.example.android.finalproject.info.MovieInfo;
 import com.squareup.picasso.Picasso;
 
