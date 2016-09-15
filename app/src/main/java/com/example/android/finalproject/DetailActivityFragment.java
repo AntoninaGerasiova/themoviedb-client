@@ -18,9 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.finalproject.adapters.ReviewAdapter;
 import com.example.android.finalproject.adapters.TrailerAdapter;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.model.MovieInfo;
+import com.example.android.finalproject.model.Review;
 import com.example.android.finalproject.model.Trailer;
 import com.linearlistview.LinearListView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -61,6 +63,11 @@ public class DetailActivityFragment extends Fragment {
     private LinearListView lvTrailers;
     private ArrayList<Trailer> trailers = new ArrayList<>();
     private TrailerAdapter trailerAdapter;
+
+    //for reviews
+    private LinearListView lvReviews;
+    private ArrayList<Review> reviews = new ArrayList<>();
+    private ReviewAdapter reviewAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,6 +197,9 @@ public class DetailActivityFragment extends Fragment {
         });
 
         //work with Reviews
+        reviewAdapter = new ReviewAdapter(getContext(), reviews);
+        lvReviews = (LinearListView) rootView.findViewById(R.id.detail_reviews);
+        lvReviews.setAdapter(reviewAdapter);
 
         return rootView;
     }
@@ -254,6 +264,18 @@ public class DetailActivityFragment extends Fragment {
                 try {
                     JSONArray reviewsJSONArray = response.getJSONArray("results");
                     Log.d(LOG_TAG, "reviewsJSONArray: " + reviewsJSONArray);
+                    reviews.clear();
+
+                    for (int i = 0; i < reviewsJSONArray.length(); i++) {
+
+                        JSONObject reviewJSON  = reviewsJSONArray
+                                .getJSONObject(i);
+                        Review review = new Review(reviewJSON);
+                        //Log.d(LOG_TAG, review.toString());
+                        reviews.add(review);
+                    }
+
+                    reviewAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     Log.e(LOG_TAG, e.getMessage(), e);

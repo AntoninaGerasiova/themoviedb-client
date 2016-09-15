@@ -26,7 +26,7 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
     private LayoutInflater inflater;
     private ArrayList<Review> reviews;
 
-    public ReviewAdapter(Context context, int resource, ArrayList<Review> reviews) {
+    public ReviewAdapter(Context context, ArrayList<Review> reviews) {
         super(context, R.layout.review_item, reviews);
         this.context = context;
         this.reviews = reviews;
