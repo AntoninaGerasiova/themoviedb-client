@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 import com.example.android.finalproject.adapters.ReviewAdapter;
 import com.example.android.finalproject.adapters.TrailerAdapter;
 import com.example.android.finalproject.data.MovieContract;
+import com.example.android.finalproject.loaders.FetchMoviesLoader;
+import com.example.android.finalproject.loaders.TrailerLoader;
 import com.example.android.finalproject.model.MovieInfo;
 import com.example.android.finalproject.model.Review;
 import com.example.android.finalproject.model.Trailer;
@@ -34,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -68,6 +73,10 @@ public class DetailActivityFragment extends Fragment {
     private LinearListView lvReviews;
     private ArrayList<Review> reviews = new ArrayList<>();
     private ReviewAdapter reviewAdapter;
+
+    //loaders
+    private static final int TRAILER_LOADER_ID = 1;
+    private static final int REVIEW_LOADER_ID = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -204,11 +213,20 @@ public class DetailActivityFragment extends Fragment {
         return rootView;
     }
 
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        //create the TrailerLoader
+        getLoaderManager().initLoader(TRAILER_LOADER_ID, null, trailerLoaderListener);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
-        fetchTrailers();
-        fetchReviews();
+        //fetchTrailers();
+        //fetchReviews();
     }
 
 
@@ -291,6 +309,31 @@ public class DetailActivityFragment extends Fragment {
 
         });
     }
+
+
+    /**
+     * Callbacks for TrailerLoader
+     */
+    private LoaderManager.LoaderCallbacks<List<Trailer>> trailerLoaderListener
+            = new LoaderManager.LoaderCallbacks<List<Trailer>>() {
+
+        @Override
+        public Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
+            Loader <List<Trailer>> loader = new TrailerLoader(getActivity(), mMovieInfo.getMovieId());
+            return loader;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
+            trailers.addAll(data);
+            trailerAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Trailer>> loader) {
+
+        }
+    };
 
 
 }
