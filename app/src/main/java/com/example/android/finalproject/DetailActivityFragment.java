@@ -217,99 +217,10 @@ public class DetailActivityFragment extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        //create the TrailerLoader
+        //create the TrailerLoader and ReviewLoader
         getLoaderManager().initLoader(TRAILER_LOADER_ID, null, trailerLoaderListener);
         getLoaderManager().initLoader(REVIEW_LOADER_ID, null, reviewLoaderListener);
         super.onActivityCreated(savedInstanceState);
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //fetchTrailers();
-        //fetchReviews();
-    }
-
-
-    /**
-     * fetch trailers info for the movie from themoviedb.org
-     */
-    private void fetchTrailers() {
-        String trailerURL = Utility.getTrailersURL(mMovieInfo.getMovieId());
-        //Log.d(LOG_TAG, "trailerURL: " + trailerURL);
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(trailerURL, null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    JSONArray trailersJSONArray = response.getJSONArray("results");
-                    //Log.d(LOG_TAG, "trailersJSONArray: " + trailersJSONArray);
-                    trailers.clear();
-                    for (int i = 0; i < trailersJSONArray.length(); i++) {
-
-                        JSONObject trailerJSON  = trailersJSONArray
-                                .getJSONObject(i);
-                        Trailer trailer = new Trailer(trailerJSON);
-                        //Log.d(LOG_TAG, trailer.toString());
-                        trailers.add(trailer);
-                    }
-
-                    trailerAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.e(LOG_TAG, "Unable to fetch trailers. Status code: " + statusCode);
-            }
-
-        });
-    }
-
-    private void fetchReviews() {
-        String reviewsURL = Utility.getReviewsURL(mMovieInfo.getMovieId());
-        //Log.d(LOG_TAG, "reviewsURL: " + reviewsURL);
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(reviewsURL, null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    JSONArray reviewsJSONArray = response.getJSONArray("results");
-                    Log.d(LOG_TAG, "reviewsJSONArray: " + reviewsJSONArray);
-                    reviews.clear();
-
-                    for (int i = 0; i < reviewsJSONArray.length(); i++) {
-
-                        JSONObject reviewJSON  = reviewsJSONArray
-                                .getJSONObject(i);
-                        Review review = new Review(reviewJSON);
-                        //Log.d(LOG_TAG, review.toString());
-                        reviews.add(review);
-                    }
-
-                    reviewAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, e.getMessage(), e);
-                }
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                Log.e(LOG_TAG, "Unable to fetch reviews. Status code: " + statusCode);
-            }
-
-        });
     }
 
 
