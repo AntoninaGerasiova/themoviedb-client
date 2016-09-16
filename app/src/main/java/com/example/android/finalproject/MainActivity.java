@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             // adding or replacing the detail fragment using a
             // fragment transaction.
 
-            if (savedInstanceState == null) {
+            if (savedInstanceState != null) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.movie_detail_container, new DetailActivityFragment())
                         .commit();

@@ -24,6 +24,7 @@ import com.example.android.finalproject.adapters.ReviewAdapter;
 import com.example.android.finalproject.adapters.TrailerAdapter;
 import com.example.android.finalproject.data.MovieContract;
 import com.example.android.finalproject.loaders.FetchMoviesLoader;
+import com.example.android.finalproject.loaders.ReviewLoader;
 import com.example.android.finalproject.loaders.TrailerLoader;
 import com.example.android.finalproject.model.MovieInfo;
 import com.example.android.finalproject.model.Review;
@@ -218,6 +219,7 @@ public class DetailActivityFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         //create the TrailerLoader
         getLoaderManager().initLoader(TRAILER_LOADER_ID, null, trailerLoaderListener);
+        getLoaderManager().initLoader(REVIEW_LOADER_ID, null, reviewLoaderListener);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -325,12 +327,40 @@ public class DetailActivityFragment extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> data) {
+            trailers.clear();
             trailers.addAll(data);
             trailerAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onLoaderReset(Loader<List<Trailer>> loader) {
+
+        }
+    };
+
+
+    /**
+     * Callbacks for ReviewLoader
+     */
+
+    private LoaderManager.LoaderCallbacks<List<Review>> reviewLoaderListener
+            = new LoaderManager.LoaderCallbacks<List<Review>>() {
+
+        @Override
+        public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
+            Loader <List<Review>> loader = new ReviewLoader(getActivity(), mMovieInfo.getMovieId());
+            return loader;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
+            reviews.clear();
+            reviews.addAll(data);
+            reviewAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<Review>> loader) {
 
         }
     };
