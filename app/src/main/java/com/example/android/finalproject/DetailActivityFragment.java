@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -150,8 +151,16 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        ScrollView detailLayout = (ScrollView) rootView.findViewById(R.id.detail_layout);
+
+        //Get information from args and fill the views of the fragment_detail.xml
+        Bundle arguments = getArguments();
+        if (arguments == null) {
+            detailLayout.setVisibility(View.INVISIBLE);
+            return rootView;
+        }
+
         // find all views
         mTitleView = (TextView) rootView.findViewById(R.id.title);
         mPosterView = (ImageView)rootView.findViewById(R.id.poster);
@@ -160,11 +169,8 @@ public class DetailActivityFragment extends Fragment {
         mReleaseView =  (TextView) rootView.findViewById(R.id.release_date);
 
 
-        //Get information from args and fill the views of the fragment_detail.xml
 
-        Bundle arguments = getArguments();
 
-        if (arguments == null)  return rootView;
         //get MovieInfo object from intent
         mMovieInfo = arguments.getParcelable(DetailActivityFragment.MOVIE_INFO);
 
@@ -232,8 +238,10 @@ public class DetailActivityFragment extends Fragment {
 
         @Override
         public Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
-            Loader <List<Trailer>> loader = new TrailerLoader(getActivity(), mMovieInfo.getMovieId());
-            return loader;
+            if (mMovieInfo != null) {
+                Loader <List<Trailer>> loader = new TrailerLoader(getActivity(), mMovieInfo.getMovieId());
+                return loader;}
+            return null;
         }
 
         @Override
@@ -259,8 +267,11 @@ public class DetailActivityFragment extends Fragment {
 
         @Override
         public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
-            Loader <List<Review>> loader = new ReviewLoader(getActivity(), mMovieInfo.getMovieId());
-            return loader;
+            if (mMovieInfo != null) {
+                Loader<List<Review>> loader = new ReviewLoader(getActivity(), mMovieInfo.getMovieId());
+                return loader;
+            }
+            return null;
         }
 
         @Override
